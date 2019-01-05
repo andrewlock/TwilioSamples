@@ -49,6 +49,7 @@ namespace ValidatePhoneNumberDemo
             var accountSid = Configuration["Twilio:AccountSID"];
             var authToken = Configuration["Twilio:AuthToken"];
             TwilioClient.Init(accountSid, authToken);
+            services.AddSingleton<CountryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
