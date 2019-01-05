@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
 {
@@ -20,12 +21,17 @@ namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
         public IndexModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            CountryService countryService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            // Load the available countries from the service
+            AvailableCountries = countryService.GetCountries();
         }
+
+        public List<SelectListItem> AvailableCountries { get; }
 
         public string Username { get; set; }
 
@@ -46,6 +52,9 @@ namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Phone number country")]
+            public string PhoneNumberCountryCode { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
