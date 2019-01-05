@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Twilio.Exceptions;
+using Twilio.Rest.Lookups.V1;
 
 namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
 {
@@ -109,11 +111,36 @@ namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                try
                 {
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
+                    var numberDetails = await PhoneNumberResource.FetchAsync(
+                        pathPhoneNumber: new Twilio.Types.PhoneNumber(Input.PhoneNumber),
+                        countryCode: Input.PhoneNumberCountryCode,
+                        type: new List<string> { "carrier" });
+
+                    // only allow user to set phone number if capable of receiving SMS
+                    var phoneNumberType = numberDetails.GetPhoneNumberType();
+                    if (phoneNumberType != null 
+                        && phoneNumberType == PhoneNumberResource.TypeEnum.Landline)
+                    {
+                        ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.PhoneNumber)}",
+                            $"The number you entered does not appear to be capable of receiving SMS ({phoneNumberType}). Please choose another");
+                        return Page();
+                    }
+
+                    var numberToSave = numberDetails.PhoneNumber.ToString();
+                    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, numberToSave);
+                    if (!setPhoneResult.Succeeded)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
+                    }
+                }
+                catch (ApiException ex)
+                {
+                    ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.PhoneNumber)}",
+                        $"The number you entered was not valid (Twilio code {ex.Code}), please check it and try again");
+                    return Page();
                 }
             }
 
