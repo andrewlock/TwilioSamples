@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using ValidatePhoneNumberDemo.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Twilio;
 
 namespace ValidatePhoneNumberDemo
 {
@@ -44,6 +45,10 @@ namespace ValidatePhoneNumberDemo
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var accountSid = Configuration["Twilio:AccountSID"];
+            var authToken = Configuration["Twilio:AuthToken"];
+            TwilioClient.Init(accountSid, authToken);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
