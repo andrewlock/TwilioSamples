@@ -119,9 +119,9 @@ namespace ValidatePhoneNumberDemo.Areas.Identity.Pages.Account.Manage
                         type: new List<string> { "carrier" });
 
                     // only allow user to set phone number if capable of receiving SMS
-                    var phoneNumberType = numberDetails.GetPhoneNumberType();
-                    if (phoneNumberType != null 
-                        && phoneNumberType == PhoneNumberResource.TypeEnum.Landline)
+                    if (numberDetails?.Carrier != null
+                        && numberDetails.Carrier.TryGetValue("type", out var phoneNumberType)
+                        && phoneNumberType == "")
                     {
                         ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.PhoneNumber)}",
                             $"The number you entered does not appear to be capable of receiving SMS ({phoneNumberType}). Please choose another");
