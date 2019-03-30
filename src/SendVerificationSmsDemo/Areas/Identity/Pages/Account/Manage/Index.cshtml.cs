@@ -39,6 +39,8 @@ namespace SendVerificationSmsDemo.Areas.Identity.Pages.Account.Manage
 
         public bool IsEmailConfirmed { get; set; }
 
+        public bool IsPhoneConfirmed { get; set; }
+
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -80,6 +82,7 @@ namespace SendVerificationSmsDemo.Areas.Identity.Pages.Account.Manage
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            IsPhoneConfirmed = await _userManager.IsPhoneNumberConfirmedAsync(user);
 
             return Page();
         }

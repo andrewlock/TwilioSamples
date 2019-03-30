@@ -38,10 +38,21 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
+                @if (Model.IsPhoneConfirmed)
+                {
+                    <div class="input-group">
+                        <input asp-for="Input.PhoneNumber" class="form-control" />
+                        <div class="input-group-append"><span class="input-group-text">✔</span></div>
+                    </div>
+                }
+                else
+                {
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <a asp-page="/Account/VerifyPhone">Send verification SMS</a>
+                }
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+            <button id="update-profile-button" type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
 </div>
