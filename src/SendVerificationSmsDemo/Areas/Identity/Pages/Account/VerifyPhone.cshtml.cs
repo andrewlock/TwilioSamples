@@ -1,35 +1,38 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
+using Twilio.Rest.Verify.V2.Service;
 
 namespace SendVerificationSmsDemo.Areas.Identity.Pages.Account
 {
     public class VerifyPhoneModel : PageModel
     {
-        private readonly TwilioVerifyClient _client;
+        private readonly TwilioVerifySettings _settings;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public VerifyPhoneModel(TwilioVerifyClient client)
+        public VerifyPhoneModel(IOptions<TwilioVerifySettings> settings, UserManager<IdentityUser> userManager)
         {
-            _client = client;
+            _settings = settings.Value;
+            _userManager = userManager;
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public class InputModel
+        public async Task<IActionResult> OnGetAsync()
         {
-            [Required]
-            [Display(Name = "Country dialing code")]
-            public int DialingCode { get; set; }
-
-            [Required]
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            PhoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            return Page();
         }
-        
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -39,13 +42,25 @@ namespace SendVerificationSmsDemo.Areas.Identity.Pages.Account
 
             try
             {
-                var result = await _client.StartVerification(Input.DialingCode, Input.PhoneNumber);
-                if (result.Success)
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
                 {
-                    return RedirectToPage("ConfirmPhone", new {Input.DialingCode, Input.PhoneNumber});
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
                 }
 
-                ModelState.AddModelError("", $"There was an error sending the verification code: {result.Message}");
+                var phone = await _userManager.GetPhoneNumberAsync(user);
+                var verification = await VerificationResource.CreateAsync(
+                    to: phone,
+                    channel: "sms",
+                    pathServiceSid: _settings.VerificationServiceSid
+                );
+
+                if (verification.Status == "pending" || verification.Status == "approved")
+                {
+                    return RedirectToPage("ConfirmPhone");
+                }
+
+                ModelState.AddModelError("", $"There was an error sending the verification code: {verification.Status}");
             }
             catch (Exception)
             {

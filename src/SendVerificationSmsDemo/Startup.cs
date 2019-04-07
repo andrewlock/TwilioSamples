@@ -48,10 +48,10 @@ namespace SendVerificationSmsDemo
 
             var accountSid = Configuration["Twilio:AccountSID"];
             var authToken = Configuration["Twilio:AuthToken"];
-            var apiKey = Configuration["Twilio:VerifyApiKey"];
+            var verificationServiceId = Configuration["Twilio:VerificationServiceSid"];
             TwilioClient.Init(accountSid, authToken);
+            services.Configure<TwilioVerifySettings>(opts => opts.VerificationServiceSid = verificationServiceId);
             services.AddSingleton<CountryService>();
-            services.AddTwilioVerifyClient(apiKey);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
