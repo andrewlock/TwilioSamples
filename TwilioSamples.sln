@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomTwilioRestClientDemo"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidatePhoneNumberDemo", "src\ValidatePhoneNumberDemo\ValidatePhoneNumberDemo.csproj", "{2063E42D-9790-477C-BF72-8F4866B9C836}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendVerificationSmsDemo", "src\SendVerificationSmsDemo\SendVerificationSmsDemo.csproj", "{92D7ECEB-3049-49C2-B23F-27692450BE04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2063E42D-9790-477C-BF72-8F4866B9C836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2063E42D-9790-477C-BF72-8F4866B9C836}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2063E42D-9790-477C-BF72-8F4866B9C836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92D7ECEB-3049-49C2-B23F-27692450BE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92D7ECEB-3049-49C2-B23F-27692450BE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92D7ECEB-3049-49C2-B23F-27692450BE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92D7ECEB-3049-49C2-B23F-27692450BE04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
