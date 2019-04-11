@@ -44,6 +44,14 @@ namespace SendVerificationSmsDemo
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var apiKey = Configuration["Twilio:VerifyApiKey"];
+
+            services.AddHttpClient<TwilioVerifyClient>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.authy.com/");
+                client.DefaultRequestHeaders.Add("X-Authy-API-Key", apiKey);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
