@@ -19,7 +19,7 @@ namespace SendVerificationSmsDemo.Areas.Identity.Pages.Account
         public ConfirmPhoneModel(TwilioVerifyClient client, UserManager<IdentityUser> userManager)
         {
             _client = client;
-            _userManager = userManager;
+        _userManager = userManager;s
         }
 
         [BindProperty(SupportsGet = true)]
