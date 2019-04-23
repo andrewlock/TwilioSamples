@@ -1,0 +1,31 @@
+﻿@page
+@model ConfirmPhoneModel
+@{
+    ViewData["Title"] = "Confirm phone number";
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <p>
+                We have sent a confirmation code to (@Model.Input.DialingCode) @Model.Input.PhoneNumber
+                Enter the code you receive to confirm your phone number.
+            </p>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input asp-for="Input.DialingCode" type="hidden" />
+            <input asp-for="Input.PhoneNumber" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="Input.VerificationCode"></label>
+                <input asp-for="Input.VerificationCode" class="form-control" type="number" />
+                <span asp-validation-for="Input.VerificationCode" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
