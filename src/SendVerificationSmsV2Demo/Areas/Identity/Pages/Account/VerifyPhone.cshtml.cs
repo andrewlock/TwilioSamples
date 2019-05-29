@@ -41,7 +41,7 @@ namespace SendVerificationSmsV2Demo.Areas.Identity.Pages.Account
                     pathServiceSid: _settings.VerificationServiceSID
                 );
 
-                if (verification.Status == "pending" || verification.Status == "approved")
+                if (verification.Status == "pending")
                 {
                     return RedirectToPage("ConfirmPhone");
                 }
